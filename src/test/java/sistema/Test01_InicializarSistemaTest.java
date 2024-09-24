@@ -38,6 +38,4 @@ public class Test01_InicializarSistemaTest {
         retorno = sistema.inicializarSistema(10);
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
     }
-
-
 }
