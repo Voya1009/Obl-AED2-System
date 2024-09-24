@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Test03_BuscarJugadorTest {
 	Retorno retorno;
 
-  	@Test
+ 	@Test
 	void buscarJugadorError01(){
     	Sistema sistema = new ImplementacionSistema();
     	sistema.inicializarSistema(10);
