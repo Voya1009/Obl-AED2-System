@@ -41,6 +41,6 @@ public class Test03_BuscarJugadorTest {
     	assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
     	retorno = sistema.buscarJugador("Mikyx");      
-    	assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
   	}  
 }
