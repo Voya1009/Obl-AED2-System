@@ -62,9 +62,7 @@ public class BST<T extends Comparable<T>> {
     }
 
     private String listAscString(BSTnode<T> node) {
-        if (node == null) {
-            return "";
-        }
+        if (node == null) return "";
 
         StringBuilder sb = new StringBuilder();
         sb.append(listAscString(node.left));

@@ -9,10 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Test01_InicializarSistemaTest {
     Retorno retorno;
 
-
-
     @Test
-    void noDeberiaInicializarSistemaConMaxSucursalesMenorOIgualA3() {
+    void inicializarSistemaError01() {
         Sistema sistema = new ImplementacionSistema();
 
         retorno = sistema.inicializarSistema(3);
@@ -29,7 +27,7 @@ public class Test01_InicializarSistemaTest {
     }
 
     @Test
-    void deberiaInicializarSistema() {
+    void inicializarSistemaOK() {
         Sistema sistema = new ImplementacionSistema();
 
         retorno = sistema.inicializarSistema(4);
