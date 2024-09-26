@@ -9,7 +9,7 @@ public class Player implements Comparable<Player> {
     String name;
     String lastName;
     Categoria cat;
-
+    Team team;
 
     public Player(String alias, String name, String lastName, Categoria cat) {
         this.alias = alias;
@@ -33,6 +33,9 @@ public class Player implements Comparable<Player> {
 
     public Categoria getCat() { return cat; }
     public void setCat(Categoria cat) { this.cat = cat; }
+
+    public Team getTeam() { return team; }
+    public void setTeam(Team team) { this.team = team; }
 
     @Override
     public int compareTo(Player p) { return alias.compareTo(p.alias); }

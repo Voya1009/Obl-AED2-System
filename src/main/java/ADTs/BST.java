@@ -4,6 +4,15 @@ public class BST<T extends Comparable<T>> {
     private BSTnode<T> root;
     private int count;
 
+    public int length(){
+        return length(root);
+    }
+
+    private int length(BSTnode<T> node) {
+        if (node == null) return 0;
+        return 1 + length(node.left) + length(node.right);
+    }
+
     public void add(T data) {
         if (root == null) root = new BSTnode<>(data);
         add(data, root);

@@ -11,10 +11,10 @@ public class ImplementacionSistema implements Sistema {
 
     UGraph<Branch> branches;
     BST<Team> teams;
-    BST<Player> allPlayers;
-    BST<Player> proPlayers;
-    BST<Player> avgPlayers;
-    BST<Player> novPlayers;
+    BST<Player> allPlayers = new BST<>();
+    BST<Player> proPlayers = new BST<>();
+    BST<Player> avgPlayers = new BST<>();
+    BST<Player> novPlayers = new BST<>();
 
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
@@ -69,14 +69,24 @@ public class ImplementacionSistema implements Sistema {
     public Retorno registrarEquipo(String nombre, String manager) {
         if(nombre == null || nombre.isEmpty() || manager == null || manager.isEmpty()) return Retorno.error1("Los parámetros no pueden ser vacíos o nulos.");
         Team newTeam = new Team(nombre, manager);
-        if(teams.get(newTeam) != null) return Retorno.error2("Ya existe un team con ese nombre.");
+        if(teams.get(newTeam) != null) return Retorno.error2("Ya existe un equipo con ese nombre.");
         teams.add(newTeam);
         return Retorno.ok("Equipo creado con éxito.");
     }
 
     @Override
     public Retorno agregarJugadorAEquipo(String nombreEquipo, String aliasJugador) {
-        return Retorno.noImplementada();
+        if(nombreEquipo == null || nombreEquipo.isEmpty() || aliasJugador == null || aliasJugador.isEmpty())
+            return Retorno.error1("Los parámetros no pueden ser vacíos o nulos.");
+        Team newTeam = new Team(nombreEquipo);
+        if(teams.get(newTeam) == null) return Retorno.error2("No existe un equipo con ese nombre.");
+        Player newPlayer = new Player(aliasJugador);
+        if(allPlayers.get(newPlayer) == null) return Retorno.error3("No existe un jugador con ese alias.");
+        if(teams.get(newTeam).getPlayers().length() == 5) return Retorno.error4("El equipo ya está completo.");
+        if(allPlayers.get(newPlayer).getCat() != Categoria.PROFESIONAL) return Retorno.error5("El jugador debe ser de categoría profesional.");
+        if(allPlayers.get(newPlayer).getTeam() != null) return Retorno.error6("El jugador ya pertenece a un equipo.");
+        teams.get(newTeam).getPlayers().add(newPlayer);
+        return Retorno.ok("Jugador ingresado con éxito.");
     }
 
     @Override
