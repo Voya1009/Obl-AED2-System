@@ -1,95 +1,99 @@
 package ADTs;
 
 import dominio.Branch;
-import dominio.Conection;
+import dominio.Connection;
 
 public class Graph<T> {
     private Branch[] branches;
-    private Conection[][] conections;
+    private Connection[][] connections;
     private final int maxBranches;
     private final boolean directed;
-    private int countApex;
+    private int countBranches;
 
     public Graph(int maxBranches, boolean isDirected) {
         this.maxBranches = maxBranches;
         directed = isDirected;
         branches = new Branch[maxBranches];
-        conections = new Conection[maxBranches][maxBranches];
+        connections = new Connection[maxBranches][maxBranches];
 
         if (directed) {
-            for (int i = 0; i < conections.length; i++) {
-                for (int j = 0; j < conections.length; j++) {
-                    conections[i][j] = new Conection();
+            for (int i = 0; i < connections.length; i++) {
+                for (int j = 0; j < connections.length; j++) {
+                    connections[i][j] = new Connection();
                 }
             }
         } else {
-            for (int i = 0; i < conections.length; i++) {
-                for (int j = 0; j < conections.length; j++) {
-                    Conection a = new Conection();
-                    conections[i][j] = a;
-                    conections[j][i] = a;
+            for (int i = 0; i < connections.length; i++) {
+                for (int j = 0; j < connections.length; j++) {
+                    Connection a = new Connection();
+                    connections[i][j] = a;
+                    connections[j][i] = a;
                 }
             }
         }
     }
 
+    public int getBranchesAmount(){ return countBranches; }
+
+    public int getMaxBranches(){ return maxBranches; }
+
     public void addBranch(Branch b) {
-        if (countApex < maxBranches) {
+        if (countBranches < maxBranches) {
             int freePos = getFreePos();
             branches[freePos] = b;
-            countApex++;
+            countBranches++;
         }
     }
 
-    public void deleteBranch(Branch vert) {
-        int posABorrar = getPos(vert);
-        for (int i = 0; i < conections.length; i++) {
-            conections[posABorrar][i].setExist(false); //Fila: Aristas adyacentes
+    public void deleteBranch(Branch b) {
+        int posToDel = getPos(b);
+        for (int i = 0; i < connections.length; i++) {
+            connections[posToDel][i].setExist(false); //Fila: Aristas adyacentes
             if (directed) {
-                conections[i][posABorrar].setExist(false); //Columna: Aristas incidentes
+                connections[i][posToDel].setExist(false); //Columna: Aristas incidentes
             }
         }
-        branches[posABorrar] = null;
-        countApex--;
+        branches[posToDel] = null;
+        countBranches--;
     }
 
-    public void addCon(Branch vInicial, Branch vFinal, Conection arista) {
-        int posVInicial = getPos(vInicial);
-        int posVFinal = getPos(vFinal);
+    public void addCon(Branch bInicial, Branch bFinal, Connection connection) {
+        int posBInitial = getPos(bInicial);
+        int posBFinal = getPos(bFinal);
 
-        Conection aux = conections[posVInicial][posVFinal];
-        aux.setLat(arista.getLat());
+        Connection aux = connections[posBInitial][posBFinal];
+        aux.setLat(connection.getLat());
         aux.setExist(true);
     }
 
 
-    public void deleteCon(Branch bInicial, Branch bFinal) {
-        int posBInicial = getPos(bInicial);
+    public void deleteCon(Branch bInitial, Branch bFinal) {
+        int posBInitial = getPos(bInitial);
         int posBFinal = getPos(bFinal);
 
-        Conection aux = conections[posBInicial][posBFinal];
+        Connection aux = connections[posBInitial][posBFinal];
         aux.setLat(0);
         aux.setExist(false);
     }
 
-    public Conection getCon(Branch vInitial, Branch vFinal) {
-        int posVInitial = getPos(vInitial);
-        int posVFinal = getPos(vFinal);
+    public Connection getCon(Branch bInitial, Branch bFinal) {
+        int posBInitial = getPos(bInitial);
+        int posBFinal = getPos(bFinal);
 
-        return conections[posVInitial][posVFinal];
+        return connections[posBInitial][posBFinal];
     }
 
     public boolean existBranch(Branch b) {
-        int posABuscar = getPos(b);
-        return posABuscar >= 0;
+        int searchPos = getPos(b);
+        return searchPos >= 0;
     }
 
     public IList<Branch> adj(Branch b) {
         IList<Branch> adj = new List<>();
         int pos = getPos(b);
 
-        for (int i = 0; i < conections.length; i++) {
-            if (conections[pos][i].doExist()) {
+        for (int i = 0; i < connections.length; i++) {
+            if (connections[pos][i].doExist()) {
                 adj.add(branches[i]);
             }
         }
@@ -100,31 +104,31 @@ public class Graph<T> {
     public void dfs(Branch b) {
         boolean[] visited = new boolean[maxBranches];
         int posB = getPos(b);
-        dfs(posB, visited, conections);
+        dfs(posB, visited, connections);
     }
 
-    private void dfs(int posB, boolean[] visited, Conection[][] conections) {
+    private void dfs(int posB, boolean[] visited, Connection[][] connections) {
         System.out.print(branches[posB] + " ");
         visited[posB] = true;
-        for (int i = 0; i < conections.length; i++) {
-            if (conections[posB][i].doExist() && !visited[i]) {
-                dfs(i, visited, conections);
+        for (int i = 0; i < connections.length; i++) {
+            if (connections[posB][i].doExist() && !visited[i]) {
+                dfs(i, visited, connections);
             }
         }
         System.out.println();
     }
 
     public void bfs(Branch b) {
-        int posV = getPos(b);
+        int posB = getPos(b);
         boolean[] visited = new boolean[maxBranches];
-        visited[posV] = true;
+        visited[posB] = true;
         IQueue<Integer> queue = new Queue<>();
-        queue.enqueue(posV);
+        queue.enqueue(posB);
         while (!queue.isEmpty()) {
             int posUnqueued = queue.unqueue();
             System.out.print(branches[posUnqueued] + " ");
-            for (int i = 0; i < conections.length; i++) {
-                if (conections[posUnqueued][i].doExist() && !visited[i]) {
+            for (int i = 0; i < connections.length; i++) {
+                if (connections[posUnqueued][i].doExist() && !visited[i]) {
                     visited[i] = true;
                     queue.enqueue(i);
                 }
@@ -132,7 +136,7 @@ public class Graph<T> {
         }
     }
 
-    public boolean esPuntoCritico(Branch b){
+    public boolean isCritical(Branch b){
         /*
         - Obtener la posicion del Vertice vert.
         - Ejecutar dfs(el metodo privado), pasando un array de visitados y la posicion de vert, luego
@@ -164,7 +168,7 @@ public class Graph<T> {
     }
 
     private int getPos(Branch b) {
-        for (int i = 0; i < conections.length; i++) {
+        for (int i = 0; i < connections.length; i++) {
             if (branches[i] != null && branches[i].equals(b)) {
                 return i;
             }

@@ -3,14 +3,15 @@ package sistema;
 import ADTs.BST;
 import ADTs.Graph;
 import dominio.Branch;
+import dominio.Connection;
 import dominio.Player;
 import dominio.Team;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
 
-    Graph<Branch> region;
-    BST<Team> teams;
+    Graph<Branch> branches = new Graph<>(10, false);
+    BST<Team> teams = new BST<>();
     BST<Player> allPlayers = new BST<>();
     BST<Player> proPlayers = new BST<>();
     BST<Player> avgPlayers = new BST<>();
@@ -19,7 +20,7 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
         if (maxSucursales <= 3) { return Retorno.error1("El sistema debe tener más de 3 sucursales."); }
-        Graph<Branch> region = new Graph<>(maxSucursales, false);
+        Graph<Branch> branches = new Graph<>(maxSucursales, false);
         BST<Team> teams = new BST<>();
         BST<Player> allPlayers = new BST<>();
         BST<Player> ProPlayers = new BST<>();
@@ -104,17 +105,39 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarSucursal(String codigo, String nombre) {
-        return Retorno.noImplementada();
+        if(branches.getBranchesAmount() == branches.getMaxBranches()) return Retorno.error1("No se puede agregar mas sucursales.");
+        if(codigo == null || codigo.isEmpty() || nombre == null || nombre.isEmpty()) return Retorno.error2("El código y el nombre no pueden ser vacíos o nulos.");
+        Branch newBranch = new Branch(codigo, nombre);
+        if(branches.existBranch(newBranch)) return Retorno.error3("Ya existe un branch con ese codigo.");
+        branches.addBranch(newBranch);
+        return Retorno.ok("Sucursal registrada con éxito.");
     }
 
     @Override
     public Retorno registrarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        return Retorno.noImplementada();
+        if(latencia < 0) return Retorno.error1("La latencia debe ser mayor a 0.");
+        if(codigoSucursal1 == null || codigoSucursal1.isEmpty() || codigoSucursal2 == null || codigoSucursal2.isEmpty())
+            return Retorno.error2("Los códigos no pueden ser vacíos o nulos.");
+        Branch newBranch = new Branch(codigoSucursal1);
+        Branch newBranch2 = new Branch(codigoSucursal2);
+        if(!branches.existBranch(newBranch) || !branches.existBranch(newBranch2)) return Retorno.error3("Las sucursales deben existir para conectarlas.");
+        if(branches.getCon(newBranch, newBranch2).doExist()) return Retorno.error4("Estas sucursales ya estan conectadas.");
+        Connection newCon = new Connection(latencia);
+        branches.addCon(newBranch, newBranch2, newCon);
+        return Retorno.ok("Conexión registrada con éxito.");
     }
 
     @Override
     public Retorno actualizarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
-        return Retorno.noImplementada();
+        if(latencia < 0) return Retorno.error1("La latencia debe ser mayor a 0.");
+        if(codigoSucursal1 == null || codigoSucursal1.isEmpty() || codigoSucursal2 == null || codigoSucursal2.isEmpty())
+            return Retorno.error2("Los códigos no pueden ser vacíos o nulos.");
+        Branch newBranch = new Branch(codigoSucursal1);
+        Branch newBranch2 = new Branch(codigoSucursal2);
+        if(!branches.existBranch(newBranch) || !branches.existBranch(newBranch2)) return Retorno.error3("Las sucursales deben existir para actualizar la conexión.");
+        if(!branches.getCon(newBranch, newBranch2).doExist()) return Retorno.error4("No existe una conexión entre las sucursales.");
+        branches.getCon(newBranch, newBranch2).setLat(latencia);
+        return Retorno.ok("Conexión actualizada con éxito.");
     }
 
     @Override
