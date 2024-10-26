@@ -87,6 +87,28 @@ public class BST<T extends Comparable<T>> {
         return sb.toString();
     }
 
+    public String listDscString() {
+        return listAscString(root);
+    }
+
+    private String listDscString(BSTnode<T> node) {
+        if (node == null) { return ""; }
+
+        StringBuilder sb = new StringBuilder();
+        String rightSubtree = listDscString(node.right);
+        if (!rightSubtree.isEmpty()) {
+            sb.append(rightSubtree).append("|");
+        }
+
+        sb.append(node.data);
+
+        String leftSubtree = listDscString(node.left);
+        if (!leftSubtree.isEmpty()) {
+            sb.append("|").append(leftSubtree);
+        }
+
+        return sb.toString();
+    }
 
     private static class BSTnode<T> {
         private T data;

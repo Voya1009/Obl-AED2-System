@@ -23,6 +23,9 @@ public class Test02_RegistrarJugadorTest {
 
         retorno = sistema.registrarJugador("Yamato", "Jakob", "", Categoria.ESTANDARD);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("", "", "", null);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
 
     @Test
@@ -40,6 +43,9 @@ public class Test02_RegistrarJugadorTest {
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
 
         retorno = sistema.registrarJugador("Hylissang", "Zdravets", "Iliev Galabov", null);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.registrarJugador(null, null, null, null);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
 

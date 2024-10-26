@@ -1,7 +1,7 @@
 package sistema;
 
 import ADTs.BST;
-import ADTs.UGraph;
+import ADTs.Graph;
 import dominio.Branch;
 import dominio.Player;
 import dominio.Team;
@@ -9,7 +9,7 @@ import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
 
-    UGraph<Branch> branches;
+    Graph<Branch> region;
     BST<Team> teams;
     BST<Player> allPlayers = new BST<>();
     BST<Player> proPlayers = new BST<>();
@@ -19,7 +19,7 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
         if (maxSucursales <= 3) { return Retorno.error1("El sistema debe tener más de 3 sucursales."); }
-        UGraph<Branch> branches = new UGraph<>(maxSucursales);
+        Graph<Branch> region = new Graph<>(maxSucursales, false);
         BST<Team> teams = new BST<>();
         BST<Player> allPlayers = new BST<>();
         BST<Player> ProPlayers = new BST<>();
@@ -91,12 +91,15 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno listarJugadoresDeEquipo(String nombreEquipo) {
-        return Retorno.noImplementada();
+        if (nombreEquipo == null || nombreEquipo.isEmpty()) return Retorno.error1("El nombre del equipo no puede ser vacío.");
+        Team newTeam = new Team(nombreEquipo);
+        if(teams.get(newTeam) == null) return Retorno.error2("No existe un equipo con ese nombre.");
+        return Retorno.ok(teams.get(newTeam).getPlayers().listAscString());
     }
 
     @Override
     public Retorno listarEquiposDescendente() {
-        return Retorno.noImplementada();
+        return Retorno.ok(teams.listDscString());
     }
 
     @Override
