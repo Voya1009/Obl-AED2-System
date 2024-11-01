@@ -1,11 +1,7 @@
 package sistema;
 
-import ADTs.BST;
-import ADTs.Graph;
-import dominio.Branch;
-import dominio.Connection;
-import dominio.Player;
-import dominio.Team;
+import ADTs.*;
+import dominio.*;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
@@ -20,12 +16,12 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
         if (maxSucursales <= 3) { return Retorno.error1("El sistema debe tener más de 3 sucursales."); }
-        Graph<Branch> branches = new Graph<>(maxSucursales, false);
-        BST<Team> teams = new BST<>();
-        BST<Player> allPlayers = new BST<>();
-        BST<Player> ProPlayers = new BST<>();
-        BST<Player> AvgPlayers = new BST<>();
-        BST<Player> NewPlayers = new BST<>();
+        branches = new Graph<>(maxSucursales, false);
+        teams = new BST<>();
+        allPlayers = new BST<>();
+        proPlayers = new BST<>();
+        avgPlayers = new BST<>();
+        novPlayers = new BST<>();
         return Retorno.ok("Sistema creado con éxito.");
     }
 
@@ -108,7 +104,7 @@ public class ImplementacionSistema implements Sistema {
         if(branches.getBranchesAmount() == branches.getMaxBranches()) return Retorno.error1("No se puede agregar mas sucursales.");
         if(codigo == null || codigo.isEmpty() || nombre == null || nombre.isEmpty()) return Retorno.error2("El código y el nombre no pueden ser vacíos o nulos.");
         Branch newBranch = new Branch(codigo, nombre);
-        if(branches.existBranch(newBranch)) return Retorno.error3("Ya existe un branch con ese codigo.");
+        if(branches.existBranch(newBranch)) return Retorno.error3("Ya existe una sucursal con ese codigo.");
         branches.addBranch(newBranch);
         return Retorno.ok("Sucursal registrada con éxito.");
     }
@@ -142,7 +138,11 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno analizarSucursal(String codigoSucursal) {
-        return Retorno.noImplementada();
+        if(codigoSucursal == null || codigoSucursal.isEmpty()) return Retorno.error1("El código no puede ser vacío o nulo.");
+        Branch b = new Branch(codigoSucursal);
+        if(!branches.existBranch(b)) return Retorno.error2("No existe una sucursal con ese codigo.");
+        if(branches.isCritical(b)) return Retorno.ok("SI");
+        return Retorno.ok("NO");
     }
 
     @Override

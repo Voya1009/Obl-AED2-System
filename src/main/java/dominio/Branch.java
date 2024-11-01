@@ -21,13 +21,12 @@ public class Branch {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Branch branch = (Branch) o;
-        return Objects.equals(name, branch.name);
+        return Objects.equals(code, branch.code);
     }
 
     @Override

@@ -100,7 +100,6 @@ public class Graph<T> {
         return adj;
     }
 
-
     public void dfs(Branch b) {
         boolean[] visited = new boolean[maxBranches];
         int posB = getPos(b);
@@ -137,24 +136,30 @@ public class Graph<T> {
     }
 
     public boolean isCritical(Branch b){
-        /*
-        - Obtener la posicion del Vertice vert.
-        - Ejecutar dfs(el metodo privado), pasando un array de visitados y la posicion de vert, luego
-        me quedo con el array de visitados que pasamos por parámetro para comparar luego.
+        int posB = getPos(b);
+        boolean[] visitedWithB = new boolean[maxBranches];
+        dfs(posB, visitedWithB, connections);
 
-        - Hacer una copia de la matriz de aristas y quitarle todas las aristas asociadas a vert.
+        boolean[] visitedWithoutB = new boolean[maxBranches];
+        visitedWithoutB[posB] = true;
 
-        - Tengo que buscar el primer true del array de visitados anterior y me quedo con dicha posicion
-        para usar como vertice de inicio para la próxima ejecución de dfs.
+        int startB = -1;
+        for (int i = 0; i < maxBranches; i++) {
+            if (!visitedWithB[i] && i != posB) {
+                startB = i;
+                break;
+            }
+        }
 
-        - Ejecutar dfs con la posicion anterior, pero utilizando la copia de la matriz de aristas
-        y me quedo con su array de visitados.
+        if (startB == -1) return false;
 
-        - Comparo el array de visitados de ambas ejecuciones de dfs
-        teniendo en cuenta el no comparar la posicion del vertice vert.
+        dfs(startB, visitedWithoutB, connections);
 
-        - Si hay diferencias devuelvo true, ya que el vertice es un punto crítico.
-         */
+        for (int i = 0; i < maxBranches; i++) {
+            if (i != posB && visitedWithB[i] != visitedWithoutB[i]) {
+                return true;
+            }
+        }
         return false;
     }
 
