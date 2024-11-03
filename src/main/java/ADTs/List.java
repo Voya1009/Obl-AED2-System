@@ -17,9 +17,7 @@ public class List<T> implements IList<T> {
         length++;
     }
 
-    public void delete(T data) {
-
-    }
+    public void delete(T data) {}
 
     public int length() {
         return length;
@@ -28,9 +26,7 @@ public class List<T> implements IList<T> {
     public boolean exist(T data) {
         Node<T> aux = head;
         while (aux != null) {
-            if (aux.getData().equals(data)) {
-                return true;
-            }
+            if (aux.getData().equals(data)) return true;
             aux = aux.getNext();
         }
         return false;
@@ -39,9 +35,7 @@ public class List<T> implements IList<T> {
     public T recover(T dato) {
         Node<T> aux = head;
         while (aux != null) {
-            if (aux.getData().equals(dato)) {
-                return aux.getData();
-            }
+            if (aux.getData().equals(dato)) return aux.getData();
             aux = aux.getNext();
         }
         return null;
@@ -58,22 +52,12 @@ public class List<T> implements IList<T> {
     public void print() {
         Node<T> aux = head;
         while (aux != null) {
-            if (aux.getNext() != null){
-                System.out.print(aux.getData() + " -> ");
-            }else{
-                System.out.print(aux.getData());
-            }
+            if (aux.getNext() != null) System.out.print(aux.getData() + " -> ");
+            else System.out.print(aux.getData());
             aux = aux.getNext();
         }
         System.out.println();
     }
-
-//    public void imprimirDatosV2(NodoLista<T> nodo ) {
-//        if (nodo!=null){
-//            System.out.println(nodo.getDato());
-//            imprimirDatosV2(nodo.getSig());
-//        }
-//    }
 
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -90,16 +74,10 @@ public class List<T> implements IList<T> {
                 aux = aux.next;
                 return data;
             }
-
-            @Override
-            public void remove() {
-            }
-
         };
     }
 
-
-    private class Node<T>{
+    private static class Node<T>{
         private T data;
         private Node<T> next;
 

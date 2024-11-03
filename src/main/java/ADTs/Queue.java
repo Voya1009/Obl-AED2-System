@@ -30,7 +30,7 @@ public class Queue<T> implements IQueue<T> {
         return this.length == 0;
     }
 
-    private class Node<Q> {
+    private static class Node<Q> {
         private final Q data;
         private Node<Q> next;
 

@@ -15,7 +15,6 @@ public class Test14_SucursalesTorneo {
         s.inicializarSistema(100);
 
         s.registrarSucursal(copiarTexto("I"), "Sucursal I");
-
         s.registrarSucursal(copiarTexto("H"), "Sucursal H");
         s.registrarSucursal(copiarTexto("J"), "Sucursal J");
         s.registrarSucursal(copiarTexto("K"), "Sucursal K");

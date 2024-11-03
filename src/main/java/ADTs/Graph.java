@@ -15,7 +15,6 @@ public class Graph<T> {
         directed = isDirected;
         branches = new Branch[maxBranches];
         connections = new Connection[maxBranches][maxBranches];
-
         if (directed) {
             for (int i = 0; i < connections.length; i++) {
                 for (int j = 0; j < connections.length; j++) {
@@ -37,6 +36,8 @@ public class Graph<T> {
 
     public int getMaxBranches(){ return maxBranches; }
 
+    public Branch getBranch(int pos) { return branches[pos]; }
+
     public void addBranch(Branch b) {
         if (countBranches < maxBranches) {
             int freePos = getFreePos();
@@ -48,10 +49,8 @@ public class Graph<T> {
     public void deleteBranch(Branch b) {
         int posToDel = getPos(b);
         for (int i = 0; i < connections.length; i++) {
-            connections[posToDel][i].setExist(false); //Fila: Aristas adyacentes
-            if (directed) {
-                connections[i][posToDel].setExist(false); //Columna: Aristas incidentes
-            }
+            connections[posToDel][i].setExist(false);
+            if (directed) connections[i][posToDel].setExist(false);
         }
         branches[posToDel] = null;
         countBranches--;
@@ -60,7 +59,6 @@ public class Graph<T> {
     public void addCon(Branch bInicial, Branch bFinal, Connection connection) {
         int posBInitial = getPos(bInicial);
         int posBFinal = getPos(bFinal);
-
         Connection aux = connections[posBInitial][posBFinal];
         aux.setLat(connection.getLat());
         aux.setExist(true);
@@ -79,7 +77,6 @@ public class Graph<T> {
     public Connection getCon(Branch bInitial, Branch bFinal) {
         int posBInitial = getPos(bInitial);
         int posBFinal = getPos(bFinal);
-
         return connections[posBInitial][posBFinal];
     }
 
@@ -88,10 +85,34 @@ public class Graph<T> {
         return searchPos >= 0;
     }
 
+    public Branch getBranch(Branch b) {
+        for (int i = 0; i < countBranches; i++) {
+            if (branches[i].equals(b)) return branches[i];
+        }
+        return null;
+    }
+
+    private int getFreePos() {
+        for (int i = 0; i < branches.length; i++) {
+            if (branches[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getPos(Branch b) {
+        for (int i = 0; i < connections.length; i++) {
+            if (branches[i] != null && branches[i].equals(b)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public IList<Branch> adj(Branch b) {
         IList<Branch> adj = new List<>();
         int pos = getPos(b);
-
         for (int i = 0; i < connections.length; i++) {
             if (connections[pos][i].doExist()) {
                 adj.add(branches[i]);
@@ -110,9 +131,7 @@ public class Graph<T> {
         System.out.print(branches[posB] + " ");
         visited[posB] = true;
         for (int i = 0; i < connections.length; i++) {
-            if (connections[posB][i].doExist() && !visited[i]) {
-                dfs(i, visited, connections);
-            }
+            if (connections[posB][i].doExist() && !visited[i]) dfs(i, visited, connections);
         }
         System.out.println();
     }
@@ -139,22 +158,25 @@ public class Graph<T> {
         int posB = getPos(b);
         boolean[] visitedWithB = new boolean[maxBranches];
         dfs(posB, visitedWithB, connections);
-
+        boolean hasOtherVisited = false;
+        for (int i = 0; i < maxBranches; i++) {
+            if (i != posB && visitedWithB[i]) {
+                hasOtherVisited = true;
+                break;
+            }
+        }
+        if (!hasOtherVisited) return false;
         boolean[] visitedWithoutB = new boolean[maxBranches];
         visitedWithoutB[posB] = true;
-
         int startB = -1;
         for (int i = 0; i < maxBranches; i++) {
-            if (!visitedWithB[i] && i != posB) {
+            if (visitedWithB[i] && i != posB) {
                 startB = i;
                 break;
             }
         }
-
         if (startB == -1) return false;
-
         dfs(startB, visitedWithoutB, connections);
-
         for (int i = 0; i < maxBranches; i++) {
             if (i != posB && visitedWithB[i] != visitedWithoutB[i]) {
                 return true;
@@ -163,22 +185,44 @@ public class Graph<T> {
         return false;
     }
 
-    private int getFreePos() {
-        for (int i = 0; i < branches.length; i++) {
-            if (branches[i] == null) {
-                return i;
+    public void dijkstra(Branch b, int[] loads, int[] cames) {
+        boolean[] visited = new boolean[maxBranches];
+        loads = new int[maxBranches];
+        cames = new int[maxBranches];
+        for (int i = 0; i < maxBranches; i++) {
+            loads[i] = Integer.MAX_VALUE;
+            cames[i] = -1;
+            visited[i] = false;
+        }
+        int originPosB = getPos(b);
+        loads[originPosB] = 0;
+        for (int i = 0; i < countBranches; i++) {
+            int pos = getNextNonVisitedLowestLatBranch(loads, visited);
+            if (pos != -1) {
+                visited[pos] = true;
+                for (int j = 0; j < maxBranches; j++) {
+                    if (connections[pos][j].doExist() && !visited[j]) {
+                        int newLoad = loads[pos] + connections[pos][j].getLat();
+                        if (loads[j] > newLoad) {
+                            loads[j] = newLoad;
+                            cames[j] = pos;
+                        }
+                    }
+                }
             }
         }
-        return -1;
     }
 
-    private int getPos(Branch b) {
-        for (int i = 0; i < connections.length; i++) {
-            if (branches[i] != null && branches[i].equals(b)) {
-                return i;
+    private int getNextNonVisitedLowestLatBranch(int[] costos, boolean[] visitados) {
+        int posMin = -1;
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < maxBranches; i++) {
+            if (!visitados[i] && costos[i] < min) {
+                min = costos[i];
+                posMin = i;
             }
         }
-        return -1;
+        return posMin;
     }
 }
 

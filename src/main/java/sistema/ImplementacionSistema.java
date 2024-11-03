@@ -82,7 +82,8 @@ public class ImplementacionSistema implements Sistema {
         if(teams.get(newTeam).getPlayers().length() == 5) return Retorno.error4("El equipo ya está completo.");
         if(allPlayers.get(newPlayer).getCat() != Categoria.PROFESIONAL) return Retorno.error5("El jugador debe ser de categoría profesional.");
         if(allPlayers.get(newPlayer).getTeam() != null) return Retorno.error6("El jugador ya pertenece a un equipo.");
-        teams.get(newTeam).getPlayers().add(newPlayer);
+        teams.get(newTeam).getPlayers().add(allPlayers.get(newPlayer));
+        allPlayers.get(newPlayer).setTeam(newTeam);
         return Retorno.ok("Jugador ingresado con éxito.");
     }
 
@@ -90,8 +91,9 @@ public class ImplementacionSistema implements Sistema {
     public Retorno listarJugadoresDeEquipo(String nombreEquipo) {
         if (nombreEquipo == null || nombreEquipo.isEmpty()) return Retorno.error1("El nombre del equipo no puede ser vacío.");
         Team newTeam = new Team(nombreEquipo);
+        Team newT = new Team(newTeam.getName(), newTeam.getManager());
         if(teams.get(newTeam) == null) return Retorno.error2("No existe un equipo con ese nombre.");
-        return Retorno.ok(teams.get(newTeam).getPlayers().listAscString());
+        return Retorno.ok(teams.get(newT).getPlayers().listAscString());
     }
 
     @Override
@@ -147,6 +149,21 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        return Retorno.noImplementada();
+        if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) return Retorno.error1("El código no puede ser vacío o nulo.");
+        Branch b = new Branch(codigoSucursalAnfitriona);
+        if (!branches.existBranch(b)) return Retorno.error2("No existe una sucursal con ese código.");
+        if (latenciaLimite <= 0) return Retorno.error3("La latencia debe ser mayor a cero.");
+        int[] loads = new int[branches.getMaxBranches()];
+        int[] cames = new int[branches.getMaxBranches()];
+        branches.dijkstra(b, loads, cames);
+        BST<Branch> tournamentBranches = new BST<>();
+        for (int i = 0; i < branches.getMaxBranches(); i++) {
+            int lat = loads[i];
+            if (lat != Integer.MAX_VALUE && lat <= latenciaLimite) {
+                Branch branch = branches.getBranch(i);
+                tournamentBranches.add(branch);
+            }
+        }
+        return Retorno.ok(tournamentBranches.listAscString());
     }
 }

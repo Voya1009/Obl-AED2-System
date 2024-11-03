@@ -20,15 +20,11 @@ public class BST<T extends Comparable<T>> {
 
     private void add(T data, BSTnode<T> node) {
         if (node.data.compareTo(data) > 0) {
-            if (node.left == null)
-                node.left = new BSTnode<>(data);
-            else
-                add(data, node.left);
+            if (node.left == null) node.left = new BSTnode<>(data);
+            else add(data, node.left);
         } else if (node.data.compareTo(data) < 0) {
-            if (node.right == null)
-                node.right = new BSTnode<>(data);
-            else
-                add(data, node.right);
+            if (node.right == null) node.right = new BSTnode<>(data);
+            else add(data, node.right);
         }
     }
 
@@ -40,29 +36,19 @@ public class BST<T extends Comparable<T>> {
     private T get(T data, BSTnode<T> node) {
         count++;
         if (node != null) {
-            if (node.data.equals(data))
-                return node.data;
-            else if (node.data.compareTo(data) > 0) {
-                return get(data, node.left);
-            } else if (node.data.compareTo(data) < 0) {
-                return get(data, node.right);
-            }
+            if (node.data.equals(data)) return node.data;
+            else if (node.data.compareTo(data) > 0) return get(data, node.left);
+            else if (node.data.compareTo(data) < 0) return get(data, node.right);
         }
         return null;
     }
 
-    public int countRoute() {
-        return count;
-    }
+    public int countRoute() { return count; }
 
-    public int countNodes() {
-        return countNodes(root);
-    }
+    public int countNodes() { return countNodes(root); }
 
-    public int countNodes(BSTnode<T> node) {
-        if (node == null) {
-            return 0;
-        }
+    private int countNodes(BSTnode<T> node) {
+        if (node == null) return 0;
         return 1 + countNodes(node.left) + countNodes(node.right);
     }
 
@@ -72,41 +58,27 @@ public class BST<T extends Comparable<T>> {
 
     private String listAscString(BSTnode<T> node) {
         if (node == null) return "";
-
         StringBuilder sb = new StringBuilder();
         sb.append(listAscString(node.left));
-
         if (!sb.toString().isEmpty()) sb.append("|");
-
-        sb.append(node.data);
-
+        sb.append(node.data.toString());
         String rightSubtree = listAscString(node.right);
-
-        if (!rightSubtree.isEmpty()) { sb.append("|").append(rightSubtree); }
-
+        if (!rightSubtree.isEmpty()) sb.append("|").append(rightSubtree);
         return sb.toString();
     }
 
     public String listDscString() {
-        return listAscString(root);
+        return listDscString(root);
     }
 
     private String listDscString(BSTnode<T> node) {
-        if (node == null) { return ""; }
-
+        if (node == null) return "";
         StringBuilder sb = new StringBuilder();
         String rightSubtree = listDscString(node.right);
-        if (!rightSubtree.isEmpty()) {
-            sb.append(rightSubtree).append("|");
-        }
-
-        sb.append(node.data);
-
+        if (!rightSubtree.isEmpty()) sb.append(rightSubtree).append("|");
+        sb.append(node.data.toString());
         String leftSubtree = listDscString(node.left);
-        if (!leftSubtree.isEmpty()) {
-            sb.append("|").append(leftSubtree);
-        }
-
+        if (!leftSubtree.isEmpty()) sb.append("|").append(leftSubtree);
         return sb.toString();
     }
 
@@ -121,7 +93,7 @@ public class BST<T extends Comparable<T>> {
 
         @Override
         public String toString() {
-            return "BSTnode[" + data + "]";
+            return data.toString();
         }
     }
 }

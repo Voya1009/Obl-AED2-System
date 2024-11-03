@@ -15,9 +15,7 @@ public class Team implements Comparable<Team> {
         BST<Player> players = new BST<>();
     }
 
-    public Team(String name){
-        this.name = name;
-    }
+    public Team(String name){ this.name = name; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -39,5 +37,5 @@ public class Team implements Comparable<Team> {
     }
 
     @Override
-    public String toString() { return name + ";" + manager + ";" + players.countNodes() + ";"; }
+    public String toString() { return name + ";" + manager + ";" + players.countNodes(); }
 }
