@@ -32,6 +32,6 @@ public class Branch implements Comparable<Branch> {
 
     @Override
     public String toString() {
-        return code + ", " + name;
+        return code + ";" + name;
     }
 }

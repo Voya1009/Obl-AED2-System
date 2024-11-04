@@ -56,12 +56,12 @@ public class Test14_SucursalesTorneo {
         s.registrarConexion("C", "F", 4);
 
         assertOk(s.sucursalesParaTorneo("A", 21), 21, "A;Sucursal A|B;Sucursal B|C;Sucursal C|D;Sucursal D|E;Sucursal E|F;Sucursal F|G;Sucursal G|H;Sucursal H|I;Sucursal I");
-//Excluimos a la de la latencia maxima E, y la segunda latencia maxima la D
+        //Excluimos a la de la latencia maxima E, y la segunda latencia maxima la D
         assertOk(s.sucursalesParaTorneo("A", 18), 14,//es la distancia de A a I
                 "A;Sucursal A|B;Sucursal B|C;Sucursal C|F;Sucursal F|G;Sucursal G|H;Sucursal H|I;Sucursal I");
         assertOk(s.sucursalesParaTorneo("A", 10), 9,//es la distancia de A a G
                 "A;Sucursal A|B;Sucursal B|G;Sucursal G|H;Sucursal H");
-//Si ponemos distancia 1, como no hay ninguna arista de valor uno nos queda el vertice A.
+        //Si ponemos distancia 1, como no hay ninguna arista de valor uno nos queda el vertice A.
         assertOk(s.sucursalesParaTorneo("A", 1), 0,//es la distancia de A a A
                 "A;Sucursal A");
 
@@ -90,7 +90,7 @@ public class Test14_SucursalesTorneo {
         //9 es la distancia al vertice E
         assertOk(s.sucursalesParaTorneo("A", 10), 9,
                 "A;Sucursal A|B;Sucursal B|C;Sucursal C|D;Sucursal D|E;Sucursal E");
-//5 es la distancia al vertice D
+        //5 es la distancia al vertice D
         assertOk(s.sucursalesParaTorneo("A", 5), 5,
                 "A;Sucursal A|C;Sucursal C|D;Sucursal D");
     }
@@ -138,7 +138,6 @@ public class Test14_SucursalesTorneo {
 
     @Test
     public void testError2() {
-
         //2. Si no existe el código de la sucursal anfitriona.
         assertOk(s.registrarSucursal("COD", "Nom"));
         assertError2(s.sucursalesParaTorneo("COD2", 230));
@@ -146,7 +145,6 @@ public class Test14_SucursalesTorneo {
 
     @Test
     public void testError3() {
-
         //3. Si la latencia es menor o igual a cero.
         assertOk(s.registrarSucursal("COD", "Nom"));
         assertError3(s.sucursalesParaTorneo("COD", 0));

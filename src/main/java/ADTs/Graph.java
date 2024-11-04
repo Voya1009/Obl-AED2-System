@@ -185,10 +185,9 @@ public class Graph<T> {
         return false;
     }
 
-    public void dijkstra(Branch b, int[] loads, int[] cames) {
+    public void dijkstra(Branch b, int[] loads) {
         boolean[] visited = new boolean[maxBranches];
-        loads = new int[maxBranches];
-        cames = new int[maxBranches];
+        int[] cames = new int[maxBranches];
         for (int i = 0; i < maxBranches; i++) {
             loads[i] = Integer.MAX_VALUE;
             cames[i] = -1;
@@ -213,12 +212,12 @@ public class Graph<T> {
         }
     }
 
-    private int getNextNonVisitedLowestLatBranch(int[] costos, boolean[] visitados) {
+    private int getNextNonVisitedLowestLatBranch(int[] loads, boolean[] visited) {
         int posMin = -1;
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < maxBranches; i++) {
-            if (!visitados[i] && costos[i] < min) {
-                min = costos[i];
+            if (!visited[i] && loads[i] < min) {
+                min = loads[i];
                 posMin = i;
             }
         }

@@ -154,16 +154,17 @@ public class ImplementacionSistema implements Sistema {
         if (!branches.existBranch(b)) return Retorno.error2("No existe una sucursal con ese código.");
         if (latenciaLimite <= 0) return Retorno.error3("La latencia debe ser mayor a cero.");
         int[] loads = new int[branches.getMaxBranches()];
-        int[] cames = new int[branches.getMaxBranches()];
-        branches.dijkstra(b, loads, cames);
+        branches.dijkstra(b, loads);
         BST<Branch> tournamentBranches = new BST<>();
+        int maxLat = 0;
         for (int i = 0; i < branches.getMaxBranches(); i++) {
             int lat = loads[i];
             if (lat != Integer.MAX_VALUE && lat <= latenciaLimite) {
                 Branch branch = branches.getBranch(i);
                 tournamentBranches.add(branch);
+                if(lat > maxLat) maxLat = lat;
             }
         }
-        return Retorno.ok(tournamentBranches.listAscString());
+        return Retorno.ok(maxLat, tournamentBranches.listAscString());
     }
 }
